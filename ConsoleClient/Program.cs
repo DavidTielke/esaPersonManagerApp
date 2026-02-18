@@ -1,5 +1,7 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
+namespace DavidTielke.PMA.UI.ConsoleClient;
+
 internal class Program
 {
     

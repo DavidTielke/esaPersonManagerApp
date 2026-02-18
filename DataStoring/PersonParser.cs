@@ -1,4 +1,8 @@
-﻿public class PersonParser
+﻿using DavidTielke.PMA.CrossCutting.DataClasses;
+
+namespace DavidTielke.PMA.Data.DataStoring;
+
+public class PersonParser
 {
     public Person Parse(string dataLine)
     {

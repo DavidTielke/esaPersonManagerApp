@@ -1,4 +1,8 @@
-﻿public class PersonDisplayCommands
+﻿using DavidTielke.PMA.Logic.PersonManagement;
+
+namespace DavidTielke.PMA.UI.ConsoleClient;
+
+public class PersonDisplayCommands
 {
     private readonly PersonManager _personManager;
 

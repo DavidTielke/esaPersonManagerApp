@@ -1,11 +1,84 @@
 {
   "version": 3,
   "targets": {
-    "net7.0": {}
+    "net7.0": {
+      "DataClasses/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v7.0",
+        "compile": {
+          "bin/placeholder/DataClasses.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/DataClasses.dll": {}
+        }
+      },
+      "DataStoring/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v7.0",
+        "dependencies": {
+          "DataClasses": "1.0.0",
+          "FileStoring": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/DataStoring.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/DataStoring.dll": {}
+        }
+      },
+      "FileStoring/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v7.0",
+        "compile": {
+          "bin/placeholder/FileStoring.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/FileStoring.dll": {}
+        }
+      },
+      "PersonManagement/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v7.0",
+        "dependencies": {
+          "DataClasses": "1.0.0",
+          "DataStoring": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/PersonManagement.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/PersonManagement.dll": {}
+        }
+      }
+    }
   },
-  "libraries": {},
+  "libraries": {
+    "DataClasses/1.0.0": {
+      "type": "project",
+      "path": "../DataClasses/DataClasses.csproj",
+      "msbuildProject": "../DataClasses/DataClasses.csproj"
+    },
+    "DataStoring/1.0.0": {
+      "type": "project",
+      "path": "../DataStoring/DataStoring.csproj",
+      "msbuildProject": "../DataStoring/DataStoring.csproj"
+    },
+    "FileStoring/1.0.0": {
+      "type": "project",
+      "path": "../FileStoring/FileStoring.csproj",
+      "msbuildProject": "../FileStoring/FileStoring.csproj"
+    },
+    "PersonManagement/1.0.0": {
+      "type": "project",
+      "path": "../PersonManagement/PersonManagement.csproj",
+      "msbuildProject": "../PersonManagement/PersonManagement.csproj"
+    }
+  },
   "projectFileDependencyGroups": {
-    "net7.0": []
+    "net7.0": [
+      "DataClasses >= 1.0.0",
+      "PersonManagement >= 1.0.0"
+    ]
   },
   "packageFolders": {
     "C:\\Users\\david\\.nuget\\packages\\": {},
@@ -39,7 +112,14 @@
       "frameworks": {
         "net7.0": {
           "targetAlias": "net7.0",
-          "projectReferences": {}
+          "projectReferences": {
+            "C:\\Source\\Esatus WS ARchitektur 26\\PersonManagerApp\\DataClasses\\DataClasses.csproj": {
+              "projectPath": "C:\\Source\\Esatus WS ARchitektur 26\\PersonManagerApp\\DataClasses\\DataClasses.csproj"
+            },
+            "C:\\Source\\Esatus WS ARchitektur 26\\PersonManagerApp\\PersonManagement\\PersonManagement.csproj": {
+              "projectPath": "C:\\Source\\Esatus WS ARchitektur 26\\PersonManagerApp\\PersonManagement\\PersonManagement.csproj"
+            }
+          }
         }
       },
       "warningProperties": {

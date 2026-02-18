@@ -1,4 +1,9 @@
-﻿public class PersonManager
+﻿using DavidTielke.PMA.CrossCutting.DataClasses;
+using DavidTielke.PMA.Data.DataStoring;
+
+namespace DavidTielke.PMA.Logic.PersonManagement;
+
+public class PersonManager
 {
     private readonly PersonRepository _personRepository;
 
