@@ -1,2 +1,264 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Queries />
+<Queries>
+  <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[// <Name>KLassen mit pot. SRP Verletzungen</Name>
+warnif count > 0 
+
+let classBlacklist = new string[]
+{
+  "Program"
+}
+
+let managementClasses = JustMyCode.Types
+                                  .Where(t => !t.IsGeneratedByCompiler)
+                                  //.Where(t => !t.ParentNamespace.FullName.Contains(".DataClasses"))
+                                  .Where(t => !classBlacklist.Any(cbl => t.SimpleName == cbl))
+
+from t in managementClasses
+
+let trueMethods = t.Methods
+                   .Where(m => !m.IsPropertySetter && !m.IsPropertyGetter)
+
+where t.NbLinesOfCode >= 0 // LOC 220
+   || trueMethods.Count() > 1 // NB Methods 10
+
+select new { t, t.NbLinesOfCode, trueMethods, Severity = Severity.Medium, Debt = 10.ToMinutes().ToDebt()}
+]]></Query>
+  <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[// <Name>Methoden mit pot. SRP Verletzungen</Name>
+//warnif count > 0 
+
+let classBlacklist = new string[]
+{
+  "Program"
+}
+
+let managementClasses = JustMyCode.Types
+                                  .Where(t => !t.IsGeneratedByCompiler)
+                                  .Where(t => !t.ParentNamespace.FullName.Contains(".DataClasses"))
+                                  .Where(t => !classBlacklist.Any(cbl => t.SimpleName == cbl))
+
+let managementMethods = managementClasses.SelectMany(t => t.Methods)
+
+from m in managementMethods 
+
+where m.NbLinesOfCode > 1 // 20
+   || m.CyclomaticComplexity > 1 // 7
+
+select new { m.ParentType, Method = m, m.NbLinesOfCode, m.CyclomaticComplexity}
+]]></Query>
+  <Group Name="Templates" Active="True" ShownInReport="False">
+    <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[// <Name>Basic Template</Name>
+//warnif count > 0 
+
+let classBlacklist = new string[]
+{
+  "Program"
+}
+
+let managementClasses = JustMyCode.Types
+                                  .Where(t => !t.IsGeneratedByCompiler)
+                                  .Where(t => !t.ParentNamespace.FullName.Contains(".DataClasses"))
+                                  .Where(t => !classBlacklist.Any(cbl => t.SimpleName == cbl))
+
+from t in managementClasses
+
+let trueMethods = t.Methods
+
+select new { t, t.NbLinesOfCode, trueMethods}
+
+]]></Query>
+  </Group>
+  <Group Name="Namensmuster" Active="True" ShownInReport="False">
+    <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[// <Name>Musterkonsistenz</Name>
+//warnif count > 0 
+
+let classBlacklist = new string[]
+{
+  "Program"
+}
+
+let namepatterns = new string[]
+{
+  "Manager",
+  "Repository",
+  "DisplayCommands",
+  "Parser",
+  "Reader"
+}
+
+let managementClasses = JustMyCode.Types
+                                  .Where(t => !t.IsGeneratedByCompiler)
+                                  .Where(t => !t.ParentNamespace.FullName.Contains(".DataClasses"))
+                                  .Where(t => !classBlacklist.Any(cbl => t.SimpleName == cbl))
+
+from t in managementClasses
+
+where !namepatterns.Any(np => t.SimpleName.EndsWith(np))
+
+select new { t, Severity = Severity.Blocker}
+
+
+]]></Query>
+    <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[// <Name>Namensmuster "Manager"</Name>
+warnif count > 0 
+
+let pattern = "Manager"
+let allowedMethods = new string[]
+{
+  "Add",
+  "Remove",
+  "Update"
+
+}
+let allowedPrefixes = new string[]
+{
+  "Get",
+  "Is",
+  "Are"
+}
+
+let managementClasses = JustMyCode
+                        .Types
+                        .Where(t => !t.ParentNamespace.FullName.Contains(".DataClasses"))
+                        .Where(t => !t.IsInterface)
+                        .Where(t => t.SimpleName.EndsWith(pattern))
+
+from t in managementClasses
+
+let illegalMethods = t.Methods
+                      .Where(m => !allowedMethods.Any(am => m.SimpleName == am || m.SimpleName == am + "Async"))
+                      .Where(m => !allowedPrefixes.Any(ap => m.SimpleName.StartsWith(ap) || m.SimpleName.StartsWith(ap) && m.SimpleName.EndsWith("Async")))
+
+where illegalMethods.Any()
+
+select new { t, illegalMethods, Severity = Severity.Blocker }
+
+]]></Query>
+    <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[// <Name>Namensmuster "Repository"</Name>
+warnif count > 0 
+
+let pattern = "Repository"
+let allowedMethods = new string[]
+{
+  "Insert",
+  "Update",
+  "Delete",
+  "Query"
+}
+let allowedPrefixes = new string[]
+{
+
+}
+
+let managementClasses = JustMyCode
+                        .Types
+                        .Where(t => !t.ParentNamespace.FullName.Contains(".DataClasses"))
+                        .Where(t => !t.IsInterface)
+                        .Where(t => t.SimpleName.EndsWith(pattern))
+
+from t in managementClasses
+
+let illegalMethods = t.Methods
+                      .Where(m => !allowedMethods.Any(am => m.SimpleName == am || m.SimpleName == am + "Async"))
+                      .Where(m => !allowedPrefixes.Any(ap => m.SimpleName.StartsWith(ap) || m.SimpleName.StartsWith(ap) && m.SimpleName.EndsWith("Async")))
+
+where illegalMethods.Any()
+
+select new { t, illegalMethods, Severity = Severity.Blocker }
+
+
+]]></Query>
+    <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[// <Name>Namensmuster "DisplayCommands"</Name>
+warnif count > 0 
+
+let pattern = "DisplayCommands"
+let allowedMethods = new string[]
+{
+
+}
+let allowedPrefixes = new string[]
+{
+  "Display"
+}
+
+let managementClasses = JustMyCode
+                        .Types
+                        .Where(t => !t.ParentNamespace.FullName.Contains(".DataClasses"))
+                        .Where(t => !t.IsInterface)
+                        .Where(t => t.SimpleName.EndsWith(pattern))
+
+from t in managementClasses
+
+let illegalMethods = t.Methods
+                      .Where(m => !allowedMethods.Any(am => m.SimpleName == am || m.SimpleName == am + "Async"))
+                      .Where(m => !allowedPrefixes.Any(ap => m.SimpleName.StartsWith(ap) || m.SimpleName.StartsWith(ap) && m.SimpleName.EndsWith("Async")))
+
+where illegalMethods.Any()
+
+select new { t, illegalMethods, Severity = Severity.Blocker }
+
+
+]]></Query>
+    <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[// <Name>Namensmuster "Parser"</Name>
+warnif count > 0 
+
+let pattern = "Parser"
+let allowedMethods = new string[]
+{
+
+}
+let allowedPrefixes = new string[]
+{
+  "Parse"
+}
+
+let managementClasses = JustMyCode
+                        .Types
+                        .Where(t => !t.ParentNamespace.FullName.Contains(".DataClasses"))
+                        .Where(t => !t.IsInterface)
+                        .Where(t => t.SimpleName.EndsWith(pattern))
+
+from t in managementClasses
+
+let illegalMethods = t.Methods
+                      .Where(m => !allowedMethods.Any(am => m.SimpleName == am || m.SimpleName == am + "Async"))
+                      .Where(m => !allowedPrefixes.Any(ap => m.SimpleName.StartsWith(ap) || m.SimpleName.StartsWith(ap) && m.SimpleName.EndsWith("Async")))
+
+where illegalMethods.Any()
+
+select new { t, illegalMethods, Severity = Severity.Blocker }
+
+
+]]></Query>
+    <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[// <Name>Namensmuster "Reader"</Name>
+warnif count > 0 
+
+let pattern = "Reader"
+let allowedMethods = new string[]
+{
+
+}
+let allowedPrefixes = new string[]
+{
+  "Read"
+}
+
+let managementClasses = JustMyCode
+                        .Types
+                        .Where(t => !t.ParentNamespace.FullName.Contains(".DataClasses"))
+                        .Where(t => !t.IsInterface)
+                        .Where(t => t.SimpleName.EndsWith(pattern))
+
+from t in managementClasses
+
+let illegalMethods = t.Methods
+                      .Where(m => !allowedMethods.Any(am => m.SimpleName == am || m.SimpleName == am + "Async"))
+                      .Where(m => !allowedPrefixes.Any(ap => m.SimpleName.StartsWith(ap) || m.SimpleName.StartsWith(ap) && m.SimpleName.EndsWith("Async")))
+
+where illegalMethods.Any()
+
+select new { t, illegalMethods, Severity = Severity.Blocker }
+
+
+]]></Query>
+  </Group>
+</Queries>
